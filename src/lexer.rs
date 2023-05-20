@@ -64,7 +64,14 @@ impl Lexer {
         c.is_ascii_alphabetic()
     }
 
+    fn consume_whitespace(&mut self) {
+        while self.peek_next_char().is_whitespace() {
+            let _space = self.next_char();
+        }
+    }
+
     pub fn get_next_token(&mut self) -> Result<LexerToken, Box<TError>> {
+        self.consume_whitespace();
         let location = self.current_location();
         let start_pos = self.pos;
         let nchar = self.next_char();
