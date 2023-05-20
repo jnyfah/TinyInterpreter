@@ -198,3 +198,63 @@ impl Lexer {
         self.data[start_pos..start_pos + count].to_string()
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::{
+        token::{LexerToken, LexerTokenType},
+        util::error::TError,
+    };
+
+    use super::Lexer;
+
+    fn lex(l: &mut Lexer) -> Result<Vec<LexerToken>, Box<TError>> {
+        let mut result = Vec::new();
+        loop {
+            let token = l.get_next_token()?;
+            match token.type_ {
+                LexerTokenType::Eof => {
+                    result.push(token);
+                    break;
+                }
+                _ => result.push(token),
+            }
+        }
+        Ok(result)
+    }
+
+    #[test]
+    fn simple_lexing_test() {
+        let data = "12 + 2 * 3.14 / ( 23 - 3.23 ) * 10.0 ";
+        let mut lexer = Lexer::new(String::from(data));
+        let result = lex(&mut lexer);
+
+        // Assert that we lex correctly
+        assert!(matches!(result, Ok(..)), "Lexer failed to lex the whole program text");
+        let actual_result = result
+            .unwrap() // unwrap is safe here becuase of the previous assert
+            .into_iter()
+            .map(|tok| tok.type_)
+            .collect::<Vec<_>>();
+
+        let expected_result = vec![
+            LexerTokenType::IntToken,
+            LexerTokenType::PlusToken,
+            LexerTokenType::IntToken,
+            LexerTokenType::MultiplyToken,
+            LexerTokenType::FloatToken,
+            LexerTokenType::DivideToken,
+            LexerTokenType::ParenOpen,
+            LexerTokenType::IntToken,
+            LexerTokenType::MinusToken,
+            LexerTokenType::FloatToken,
+            LexerTokenType::ParenClose,
+            LexerTokenType::MultiplyToken,
+            LexerTokenType::FloatToken,
+        ];
+
+        for (expected, actual) in expected_result.into_iter().zip(actual_result) {
+            assert_eq!(expected, actual)
+        }
+    }
+}
