@@ -90,13 +90,6 @@ impl Lexer {
                 type_: LexerTokenType::Newline,
             });
         }
-        if nchar == '\t' {
-            return Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
-                location,
-                type_: LexerTokenType::Tab,
-            });
-        }
         if nchar == '(' {
             return Ok(LexerToken {
                 value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
