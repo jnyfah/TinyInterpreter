@@ -1,5 +1,5 @@
-use std::string::String;
 use std::fmt;
+use std::string::String;
 
 #[derive(Debug, Clone)]
 pub struct SourceLocation {
@@ -23,7 +23,6 @@ impl SourceLocation {
     pub fn to_string(&self) -> String {
         format!("<line:{}, col:{}>", self.line, self.col)
     }
-    
 }
 
 impl fmt::Display for SourceLocation {
@@ -31,7 +30,6 @@ impl fmt::Display for SourceLocation {
         Ok(())
     }
 }
-
 
 #[derive(Debug)]
 pub struct SourceRange {

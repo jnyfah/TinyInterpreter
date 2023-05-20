@@ -1,13 +1,11 @@
-use crate::util::*;
-use std::string::String;
 use crate::token::*;
-use std::error::Error;
 use crate::util::error::*;
+use crate::util::*;
+use std::error::Error;
+use std::string::String;
 
-
-
-pub struct Lexer{
-    data:  String,
+pub struct Lexer {
+    data: String,
     x_pos: u16,
     y_pos: u16,
     pos: u16,
@@ -25,9 +23,8 @@ impl Lexer {
         }
     }
 
-    pub fn current_location(&self) -> location::SourceLocation
-    {
-        return  location::SourceLocation::new(self.y_pos, self.x_pos);
+    pub fn current_location(&self) -> location::SourceLocation {
+        return location::SourceLocation::new(self.y_pos, self.x_pos);
     }
 
     fn next_char(&mut self) -> char {
@@ -67,12 +64,11 @@ impl Lexer {
         c.is_ascii_alphabetic()
     }
 
-
     pub fn get_next_token(&mut self) -> Result<LexerToken, Box<TError>> {
         let location = self.current_location();
         let start_pos = self.pos;
         let nchar = self.next_char();
-    
+
         if nchar == '\0' {
             return Ok(LexerToken {
                 value: "".to_string(),
@@ -144,7 +140,10 @@ impl Lexer {
             });
         }
         if !(self.is_alpha(nchar) || self.is_numeric(nchar)) {
-            return Err(Box::new(TError::new(&format!("Unknown character at line {}", location))));
+            return Err(Box::new(TError::new(&format!(
+                "Unknown character at line {}",
+                location
+            ))));
         }
 
         let substr = self.next_valid_sequences(start_pos.into());
@@ -176,8 +175,7 @@ impl Lexer {
             type_: LexerTokenType::VarToken,
         })
     }
-    
-    
+
     fn next_valid_sequences(&mut self, from: usize) -> String {
         let mut counts: usize = 0;
         loop {
@@ -190,7 +188,7 @@ impl Lexer {
         }
         self.data[from..from + counts].to_string()
     }
-    
+
     fn fetch_consecutive(&mut self, start_pos: usize, ch: char) -> String {
         let mut count = 1;
         while self.peek_next_char() == ch {
@@ -199,8 +197,4 @@ impl Lexer {
         }
         self.data[start_pos..start_pos + count].to_string()
     }
-    
-
-      
 }
-
