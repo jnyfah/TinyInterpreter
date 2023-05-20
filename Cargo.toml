@@ -1,0 +1,9 @@
+[package]
+name = "TinyInterpreter"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+profile-rustflags = []
+
+[dependencies]
