@@ -76,104 +76,88 @@ impl Lexer {
         let start_pos = self.pos;
         let nchar = self.next_char();
 
-        if nchar == '\0' {
-            return Ok(LexerToken {
+        match nchar {
+            '\0' => Ok(LexerToken {
                 value: "".to_string(),
                 location,
                 type_: LexerTokenType::Eof,
-            });
-        }
-        if nchar == '\n' {
-            return Ok(LexerToken {
-                value: "".to_string(),
-                location,
-                type_: LexerTokenType::Newline,
-            });
-        }
-        if nchar == '(' {
-            return Ok(LexerToken {
+            }),
+            '\n' => {
+                return Ok(LexerToken {
+                    value: "".to_string(),
+                    location,
+                    type_: LexerTokenType::Newline,
+                });
+            }
+            '(' => Ok(LexerToken {
                 value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
                 location,
                 type_: LexerTokenType::ParenOpen,
-            });
-        }
-        if nchar == ')' {
-            return Ok(LexerToken {
+            }),
+            ')' => Ok(LexerToken {
                 value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
                 location,
                 type_: LexerTokenType::ParenClose,
-            });
-        }
-        if nchar == '+' {
-            return Ok(LexerToken {
+            }),
+            '+' => Ok(LexerToken {
                 value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
                 location,
                 type_: LexerTokenType::PlusToken,
-            });
-        }
-        if nchar == '/' {
-            return Ok(LexerToken {
+            }),
+            '/' => Ok(LexerToken {
                 value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
                 location,
                 type_: LexerTokenType::DivideToken,
-            });
-        }
-        if nchar == '*' {
-            return Ok(LexerToken {
+            }),
+            '*' => Ok(LexerToken {
                 value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
                 location,
                 type_: LexerTokenType::MultiplyToken,
-            });
-        }
-        if nchar == '-' {
-            return Ok(LexerToken {
+            }),
+            '-' => Ok(LexerToken {
                 value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
                 location,
                 type_: LexerTokenType::MinusToken,
-            });
-        }
-        if nchar == '=' {
-            return Ok(LexerToken {
+            }),
+            '=' => Ok(LexerToken {
                 value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
                 location,
                 type_: LexerTokenType::AssignToken,
-            });
-        }
-        if !(self.is_alpha(nchar) || self.is_numeric(nchar)) {
-            return Err(Box::new(TError::new(&format!(
-                "Unknown character at line {}",
-                location
-            ))));
-        }
-
-        let substr = self.next_valid_sequences(start_pos.into());
-        if substr.chars().all(|c| self.is_numeric(c)) {
-            if substr.chars().all(|c| self.is_integer(c)) {
-                return Ok(LexerToken {
-                    value: substr.to_string(),
-                    location,
-                    type_: LexerTokenType::IntToken,
-                });
-            } else {
-                return Ok(LexerToken {
-                    value: substr.to_string(),
-                    location,
-                    type_: LexerTokenType::FloatToken,
-                });
+            }),
+            _ if !(self.is_alpha(nchar) || self.is_numeric(nchar)) => Err(Box::new(TError::new(
+                &format!("Unknown character at line {}", location),
+            ))),
+            _ => {
+                let substr = self.next_valid_sequences(start_pos.into());
+                if substr.chars().all(|c| self.is_numeric(c)) {
+                    if substr.chars().all(|c| self.is_integer(c)) {
+                        Ok(LexerToken {
+                            value: substr.to_string(),
+                            location,
+                            type_: LexerTokenType::IntToken,
+                        })
+                    } else {
+                        Ok(LexerToken {
+                            value: substr.to_string(),
+                            location,
+                            type_: LexerTokenType::FloatToken,
+                        })
+                    }
+                } else if substr == "print" || substr == "Print" {
+                     Ok(LexerToken {
+                        value: substr,
+                        location,
+                        type_: LexerTokenType::PrintToken,
+                    })
+                } else {
+                    Ok(LexerToken {
+                        value: substr,
+                        location,
+                        type_: LexerTokenType::VarToken,
+                    })
+                }
             }
         }
-        if substr == "print" || substr == "Print" {
-            return Ok(LexerToken {
-                value: substr,
-                location,
-                type_: LexerTokenType::PrintToken,
-            });
-        }
-        Ok(LexerToken {
-            value: substr,
-            location,
-            type_: LexerTokenType::VarToken,
-        })
     }
 
     fn next_valid_sequences(&mut self, from: usize) -> String {
@@ -230,7 +214,10 @@ mod test {
         let result = lex(&mut lexer);
 
         // Assert that we lex correctly
-        assert!(matches!(result, Ok(..)), "Lexer failed to lex the whole program text");
+        assert!(
+            matches!(result, Ok(..)),
+            "Lexer failed to lex the whole program text"
+        );
         let actual_result = result
             .unwrap() // unwrap is safe here becuase of the previous assert
             .into_iter()
@@ -251,7 +238,14 @@ mod test {
             LexerTokenType::ParenClose,
             LexerTokenType::MultiplyToken,
             LexerTokenType::FloatToken,
+            LexerTokenType::Eof,
         ];
+
+        assert_eq!(
+            expected_result.len(),
+            actual_result.len(),
+            "Unequal length of results"
+        );
 
         for (expected, actual) in expected_result.into_iter().zip(actual_result) {
             assert_eq!(expected, actual)
