@@ -15,6 +15,7 @@ pub struct TError {
     location: SourceLocation,
 }
 
+#[allow(dead_code)]
 impl TError {
     pub fn new(message: &str) -> Self {
         TError {
@@ -30,6 +31,7 @@ impl TError {
         }
     }
 
+    // this function might not be necessary 
     pub fn get_error_message(&self) -> String {
         format!("{}{}", self.message, self.location.to_string())
     }

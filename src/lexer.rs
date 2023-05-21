@@ -4,19 +4,18 @@ use crate::util::*;
 use std::error::Error;
 use std::string::String;
 
-pub struct Lexer {
-    data: String,
-    x_pos: u16,
-    y_pos: u16,
-    pos: u16,
-    checkpoint: [u16; 3],
+pub struct Lexer{
+    data:  String,
+    x_pos: usize,
+    y_pos: usize,
+    pos: usize,
 }
 
+#[allow(dead_code)]
 impl Lexer {
     fn new(data: String) -> Self {
         Lexer {
             data,
-            checkpoint: [0, 0, 0],
             pos: 0,
             y_pos: 1,
             x_pos: 1,
@@ -28,27 +27,27 @@ impl Lexer {
     }
 
     fn next_char(&mut self) -> Option<char> {
-        if self.pos >= self.data.len() as u16 {
+        if self.pos >= self.data.len() {
             return None;
         }
 
         self.x_pos += 1;
-        if self.data.chars().nth(usize::from(self.pos)) == Some('\n') {
+        if self.data.chars().nth(self.pos) == Some('\n') {
             self.y_pos += 1;
             self.x_pos = 1;
         }
 
-        let next_char = self.data.chars().nth(usize::from(self.pos));
+        let next_char = self.data.chars().nth(self.pos);
         self.pos += 1;
 
         next_char
     }
 
     fn peek_next_char(&mut self) -> Option<char> {
-        if self.pos >= self.data.len() as u16 {
+        if self.pos >= self.data.len() {
             None
         } else {
-            self.data.chars().nth(usize::from(self.pos))
+            self.data.chars().nth(self.pos)
         }
     }
 
@@ -69,7 +68,7 @@ impl Lexer {
             let _space = self.next_char();
         }
     }
-
+    
     pub fn get_next_token(&mut self) -> Result<LexerToken, Box<TError>> {
         self.consume_whitespace();
         let location = self.current_location();
@@ -127,7 +126,7 @@ impl Lexer {
                 type_: LexerTokenType::AssignToken,
             }),
             _ if !(self.is_alpha(nchar) || self.is_numeric(nchar)) => Err(Box::new(TError::new(
-                &format!("Unknown character at line {}", location),
+                &format!("Unknown character at line {}", location.to_string()),
             ))),
             _ => {
                 let substr = self.next_valid_sequences(start_pos.into());

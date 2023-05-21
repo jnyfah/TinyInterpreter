@@ -18,7 +18,6 @@ pub enum LexerTokenType {
     Tab,
     Newline,
     Eof,
-    Unknown,
 }
 
 impl LexerTokenType {
@@ -39,7 +38,6 @@ impl LexerTokenType {
             LexerTokenType::Tab => "Tab",
             LexerTokenType::Newline => "Newline",
             LexerTokenType::Eof => "Eof",
-            LexerTokenType::Unknown => "Unknown",
         }
     }
 }
@@ -51,6 +49,7 @@ pub struct LexerToken {
     pub type_: LexerTokenType,
 }
 
+#[allow(dead_code)]
 impl LexerToken {
     pub fn to_string(&self) -> String {
         format!(
