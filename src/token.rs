@@ -1,7 +1,6 @@
 use crate::util::*;
 use std::string::String;
 
-
 #[derive(Debug, PartialEq)]
 pub enum LexerTokenType {
     ParenOpen,
