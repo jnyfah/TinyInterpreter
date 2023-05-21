@@ -8,50 +8,49 @@ use crate::util::error::*;
 
 pub struct Lexer{
     data:  String,
-    x_pos: u16,
-    y_pos: u16,
-    pos: u16,
-    checkpoint: [u16; 3],
+    x_pos: usize,
+    y_pos: usize,
+    pos: usize,
 }
 
+#[allow(dead_code)]
 impl Lexer {
     fn new(data: String) -> Self {
         Lexer {
             data,
-            checkpoint: [0, 0, 0],
             pos: 0,
             y_pos: 1,
             x_pos: 1,
         }
     }
 
-    pub fn current_location(&self) -> location::SourceLocation
+    fn current_location(&self) -> location::SourceLocation
     {
         return  location::SourceLocation::new(self.y_pos, self.x_pos);
     }
 
     fn next_char(&mut self) -> char {
-        if self.pos >= self.data.len() as u16 {
+        if self.pos >= self.data.len() {
             return '\0';
         }
 
         self.x_pos += 1;
-        if self.data.chars().nth(usize::from(self.pos)) == Some('\n') {
+        if self.data.chars().nth(self.pos) == Some('\n') {
             self.y_pos += 1;
             self.x_pos = 1;
         }
 
-        let next_char = self.data.chars().nth(usize::from(self.pos));
+        let next_char = self.data.chars().nth(self.pos);
         self.pos += 1;
 
         next_char.unwrap_or('\0')
     }
 
     fn peek_next_char(&mut self) -> char {
-        if self.pos >= self.data.len() as u16 {
+        if self.pos >= self.data.len() {
             return '\0';
         }
-        let next_char = self.data.chars().nth(usize::from(self.pos));
+        let next_char = self.data.chars().nth(self.pos);
         next_char.unwrap_or('\0')
     }
 
@@ -89,62 +88,67 @@ impl Lexer {
         }
         if nchar == '\t' {
             return Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::Tab,
             });
         }
         if nchar == '(' {
             return Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::ParenOpen,
             });
         }
         if nchar == ')' {
             return Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::ParenClose,
             });
         }
         if nchar == '+' {
             return Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::PlusToken,
             });
         }
         if nchar == '/' {
             return Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::DivideToken,
             });
         }
         if nchar == '*' {
             return Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::MultiplyToken,
             });
         }
         if nchar == '-' {
             return Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::MinusToken,
             });
         }
         if nchar == '=' {
             return Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::AssignToken,
             });
         }
+        if nchar == ' ' {
+            return Ok(LexerToken{
+                value: self.fetch_consecutive(start_pos , ' '), location, type_: LexerTokenType::Space
+            })
+        }
         if !(self.is_alpha(nchar) || self.is_numeric(nchar)) {
-            return Err(Box::new(TError::new(&format!("Unknown character at line {}", location))));
+            return Err(Box::new(TError::new(&format!("Unknown character at line {}", location.to_string()))));
         }
 
         let substr = self.next_valid_sequences(start_pos.into());

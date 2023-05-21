@@ -1,22 +1,22 @@
 use std::string::String;
-use std::fmt;
 
 #[derive(Debug, Clone)]
 pub struct SourceLocation {
-    line: u16,
-    col: u16,
+    line: usize,
+    col: usize,
 }
 
+#[allow(dead_code)]
 impl SourceLocation {
-    pub fn new(line: u16, col: u16) -> Self {
+    pub fn new(line: usize, col: usize) -> Self {
         SourceLocation { line, col }
     }
 
-    pub fn line(&self) -> u16 {
+    pub fn line(&self) -> usize {
         self.line
     }
 
-    pub fn col(&self) -> u16 {
+    pub fn col(&self) -> usize {
         self.col
     }
 
@@ -24,12 +24,6 @@ impl SourceLocation {
         format!("<line:{}, col:{}>", self.line, self.col)
     }
     
-}
-
-impl fmt::Display for SourceLocation {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        Ok(())
-    }
 }
 
 
