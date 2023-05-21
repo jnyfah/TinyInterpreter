@@ -27,9 +27,9 @@ impl Lexer {
         return location::SourceLocation::new(self.y_pos, self.x_pos);
     }
 
-    fn next_char(&mut self) -> char {
+    fn next_char(&mut self) -> Option<char> {
         if self.pos >= self.data.len() as u16 {
-            return '\0';
+            return None;
         }
 
         self.x_pos += 1;
@@ -41,15 +41,15 @@ impl Lexer {
         let next_char = self.data.chars().nth(usize::from(self.pos));
         self.pos += 1;
 
-        next_char.unwrap_or('\0')
+        next_char
     }
 
-    fn peek_next_char(&mut self) -> char {
+    fn peek_next_char(&mut self) -> Option<char> {
         if self.pos >= self.data.len() as u16 {
-            return '\0';
+            None
+        } else {
+            self.data.chars().nth(usize::from(self.pos))
         }
-        let next_char = self.data.chars().nth(usize::from(self.pos));
-        next_char.unwrap_or('\0')
     }
 
     fn is_integer(&self, c: char) -> bool {
@@ -65,7 +65,7 @@ impl Lexer {
     }
 
     fn consume_whitespace(&mut self) {
-        while self.peek_next_char().is_whitespace() {
+        while let Some(true) = self.peek_next_char().map(|c| c.is_whitespace()) {
             let _space = self.next_char();
         }
     }
@@ -76,12 +76,14 @@ impl Lexer {
         let start_pos = self.pos;
         let nchar = self.next_char();
 
-        match nchar {
-            '\0' => Ok(LexerToken {
+        let Some(nchar) = nchar else { 
+            return Ok(LexerToken {
                 value: "".to_string(),
                 location,
                 type_: LexerTokenType::Eof,
-            }),
+        })};
+
+        match nchar {
             '\n' => {
                 return Ok(LexerToken {
                     value: "".to_string(),
@@ -144,7 +146,7 @@ impl Lexer {
                         })
                     }
                 } else if substr == "print" || substr == "Print" {
-                     Ok(LexerToken {
+                    Ok(LexerToken {
                         value: substr,
                         location,
                         type_: LexerTokenType::PrintToken,
@@ -164,6 +166,7 @@ impl Lexer {
         let mut counts: usize = 0;
         loop {
             let c = self.peek_next_char();
+            let Some(c) = c else { break };
             counts += 1;
             if !(self.is_alpha(c) || self.is_numeric(c)) {
                 break;
@@ -175,7 +178,7 @@ impl Lexer {
 
     fn fetch_consecutive(&mut self, start_pos: usize, ch: char) -> String {
         let mut count = 1;
-        while self.peek_next_char() == ch {
+        while let Some(true) = self.peek_next_char().map(|c| c == ch) {
             count += 1;
             self.next_char();
         }
