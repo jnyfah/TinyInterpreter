@@ -91,37 +91,37 @@ impl Lexer {
                 });
             }
             '(' => Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::ParenOpen,
             }),
             ')' => Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::ParenClose,
             }),
             '+' => Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::PlusToken,
             }),
             '/' => Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::DivideToken,
             }),
             '*' => Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::MultiplyToken,
             }),
             '-' => Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::MinusToken,
             }),
             '=' => Ok(LexerToken {
-                value: self.data[start_pos as usize..start_pos as usize + 1].to_owned(),
+                value: self.data[start_pos ..start_pos  + 1].to_owned(),
                 location,
                 type_: LexerTokenType::AssignToken,
             }),

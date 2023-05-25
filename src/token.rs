@@ -14,8 +14,6 @@ pub enum LexerTokenType {
     MultiplyToken,
     AssignToken,
     PrintToken,
-    Space,
-    Tab,
     Newline,
     Eof,
 }
@@ -34,8 +32,6 @@ impl LexerTokenType {
             LexerTokenType::MultiplyToken => "MultiplyToken",
             LexerTokenType::AssignToken => "AssignToken",
             LexerTokenType::PrintToken => "PrintToken",
-            LexerTokenType::Space => "Space",
-            LexerTokenType::Tab => "Tab",
             LexerTokenType::Newline => "Newline",
             LexerTokenType::Eof => "Eof",
         }
