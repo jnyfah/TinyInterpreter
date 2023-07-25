@@ -27,7 +27,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          vcpkg install --triplet $VCPKG_DEFAULT_TRIPLET freetype harfbuzz fmt spdlog simdjson gtest webp jpeg libpng sdl2 libavif curl
+          vcpkg_list="freetype harfbuzz fmt spdlog simdjson gtest webp jpeg libpng sdl2 libavif curl"
+          vcpkg install --triplet $VCPKG_DEFAULT_TRIPLET $vcpkg_list
 
       - name: Configure and build project
         run: |
