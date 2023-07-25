@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          vcpkg install freetype harfbuzz fmt spdlog simdjson gtest webp jpeg libpng sdl2 libavif curl --triplet x64-windows
+          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
 
       - name: Configure and build project
         run: |
