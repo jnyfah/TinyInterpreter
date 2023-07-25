@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      VCPKG_DEFAULT_TRIPLET: x64-windows
 
     steps:
       - name: Checkout code
@@ -25,7 +27,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          vcpkg install freetype harfbuzz fmt spdlog simdjson gtest webp jpeg libpng sdl2 libavif curl
+          vcpkg --triplet $VCPKG_DEFAULT_TRIPLET freetype harfbuzz fmt spdlog simdjson gtest webp jpeg libpng sdl2 libavif curl
 
       - name: Configure and build project
         run: |
