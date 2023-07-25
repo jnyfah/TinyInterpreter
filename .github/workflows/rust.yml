@@ -12,46 +12,20 @@ jobs:
   build:
     runs-on: windows-latest
 
-    # Cache dependencies and CMake build directory to speed up subsequent runs
-    env:
-      VCPKG_DEFAULT_TRIPLET: x64-windows
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Cache vcpkg downloads
-        id: cache-vcpkg
-        uses: actions/cache@v2
-        with:
-          path: vcpkg
-          key: ${{ runner.os }}-vcpkg-${{ env.VCPKG_DEFAULT_TRIPLET }}-${{ hashFiles('vcpkg.json') }}
-
       - name: Install vcpkg
         run: |
-          if [ ! -d vcpkg ]; then
-            git clone https://github.com/microsoft/vcpkg.git
-            cd vcpkg
-            ./bootstrap-vcpkg.bat
-          fi
-          cp -r vcpkg $RUNNER_WORKSPACE
-
-      - name: Restore vcpkg cache
-        if: steps.cache-vcpkg.outputs.cache-hit == 'true'
-        run: |
-          cp -r $RUNNER_WORKSPACE/vcpkg .
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          .\bootstrap-vcpkg.bat
+          vcpkg integrate install
 
       - name: Install dependencies
         run: |
-          ./vcpkg/vcpkg install freetype harfbuzz fmt spdlog simdjson gtest webp jpeg libpng sdl2 libavif curl
-
-      - name: Cache CMake build directory
-        id: cache-cmake
-        uses: actions/cache@v2
-        with:
-          path: build
-          key: ${{ runner.os }}-cmake-build-${{ env.VCPKG_DEFAULT_TRIPLET }}-${{ hashFiles('CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-cmake-build-${{ env.VCPKG_DEFAULT_TRIPLET }}-
+          vcpkg install freetype harfbuzz fmt spdlog simdjson gtest webp jpeg libpng sdl2 libavif curl
 
       - name: Configure and build project
         run: |
@@ -59,11 +33,6 @@ jobs:
           cd build
           cmake .. -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake
           cmake --build .
-
-      - name: Restore CMake build cache
-        if: steps.cache-cmake.outputs.cache-hit == 'true'
-        run: |
-          cp -r $RUNNER_WORKSPACE/build .
 
       - name: Run tests
         run: |
