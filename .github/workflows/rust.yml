@@ -32,7 +32,7 @@ jobs:
 
           # Clean up the temporary directory
           cd ..
-          rmdir /s /q temp
+          rmdir /s temp
 
       - name: Install vcpkg
         run: |
