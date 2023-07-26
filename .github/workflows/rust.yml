@@ -29,10 +29,7 @@ jobs:
           # Replace "vulkan_sdk_installer.exe" with the actual installer name
           # and provide any necessary installation options if required
           .\VulkanSDK-1.3.250.1-Installer.exe
-
-          # Clean up the temporary directory
-          cd ..
-          rmdir /s temp
+          
 
       - name: Install vcpkg
         run: |
