@@ -16,14 +16,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Cache the Vulkan SDK
+      - name: Cache Vulkan SDK
+        id: cache-vulkan-sdk
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.USERPROFILE }}\.vcpkg
+          key: ${{ runner.os }}-vulkan-sdk-${{ env.VULKAN_SDK_VERSION }}-${{ env.VULKAN_SDK_COMPONENTS }}
+          restore-keys: |
+            ${{ runner.os }}-vulkan-sdk-
+
+      # Cache vcpkg
+      - name: Cache vcpkg
+        id: cache-vcpkg
+        uses: actions/cache@v2
+        with:
+          path: vcpkg
+          key: ${{ runner.os }}-vcpkg
+          restore-keys: |
+            ${{ runner.os }}-vcpkg-
+
       - name: Install Vulkan SDK
+        if: steps.cache-vulkan-sdk.outputs.cache-hit != 'true'
         uses: humbletim/setup-vulkan-sdk@v1.2.0
         with:
-          vulkan-query-version: 1.3.204.0
-          vulkan-components: Vulkan-Headers, Vulkan-Loader
-          vulkan-use-cache: true  
+          vulkan-query-version: ${{ env.VULKAN_SDK_VERSION }}
+          vulkan-components: ${{ env.VULKAN_SDK_COMPONENTS }}
+          vulkan-use-cache: true
 
       - name: Install vcpkg
+        if: steps.cache-vcpkg.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           cd vcpkg
