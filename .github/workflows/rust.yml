@@ -16,19 +16,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Cache Vulkan SDK
-        id: cache-vulkan-sdk
-        uses: actions/cache@v1
+      - name: Install Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
         with:
-          path: "C:\\VulkanSDK\\1.3.250.1"
-          key: vulkan-sdk-1.3.250.1
-      - name: Setup Vulkan
-        if: steps.cache-vulkan-sdk.outputs.cache-hit != 'true'
-        run: |
-            Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/1.3.250.1/windows/VulkanSDK-1.3.250.1-Installer.exe" -OutFile VulkanSDK.exe
-            $installer = Start-Process -FilePath VulkanSDK.exe -Wait -PassThru -ArgumentList @("/S");
-            $installer.WaitForExit();
-          
+          vulkan-query-version: 1.3.204.0
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true  
 
       - name: Install vcpkg
         run: |
