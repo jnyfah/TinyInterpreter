@@ -16,36 +16,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Cache the Vulkan SDK
       - name: Cache Vulkan SDK
-        id: cache-vulkan-sdk
+        id: cache-vulkan
         uses: actions/cache@v2
         with:
-          path: ${{ env.USERPROFILE }}\.vcpkg
-          key: ${{ runner.os }}-vulkan-sdk-${{ env.VULKAN_SDK_VERSION }}-${{ env.VULKAN_SDK_COMPONENTS }}
-          restore-keys: |
-            ${{ runner.os }}-vulkan-sdk-
+          path: C:/VulkanSDK # The path to your Vulkan SDK installation directory
+          key: ${{ runner.os }}-vulkan-${{ hashFiles('path/to/your/vulkan/config') }}
+        if: steps.cache-vulkan.outputs.cache-hit != 'true'
 
-      # Cache vcpkg
+      - name: Install Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        with:
+          vulkan-query-version: 1.3.204.0
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true  
+
       - name: Cache vcpkg
         id: cache-vcpkg
         uses: actions/cache@v2
         with:
           path: vcpkg
-          key: ${{ runner.os }}-vcpkg
-          restore-keys: |
-            ${{ runner.os }}-vcpkg-
-
-      - name: Install Vulkan SDK
-        if: steps.cache-vulkan-sdk.outputs.cache-hit != 'true'
-        uses: humbletim/setup-vulkan-sdk@v1.2.0
-        with:
-          vulkan-query-version: ${{ env.VULKAN_SDK_VERSION }}
-          vulkan-components: ${{ env.VULKAN_SDK_COMPONENTS }}
-          vulkan-use-cache: true
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('path/to/your/vcpkg/config') }}
+        if: steps.cache-vcpkg.outputs.cache-hit != 'true'
 
       - name: Install vcpkg
-        if: steps.cache-vcpkg.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           cd vcpkg
