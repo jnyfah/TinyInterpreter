@@ -45,6 +45,14 @@ jobs:
           cd vcpkg
           .\bootstrap-vcpkg.bat
           vcpkg integrate install
+          
+      - name: Cache vcpkg dependencies
+        id: cache-vcpkg-deps
+        uses: actions/cache@v2
+        with:
+          path: C:/path/to/installed/vcpkg/packages # The path where vcpkg installs its packages
+          key: ${{ runner.os }}-vcpkg-deps-${{ hashFiles('path/to/your/vcpkg/config') }}
+        if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
 
       - name: Install dependencies
         run: |
