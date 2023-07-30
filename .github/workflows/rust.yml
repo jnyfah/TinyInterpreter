@@ -21,7 +21,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: C:/VulkanSDK # The path to your Vulkan SDK installation directory
-          key: ${{ runner.os }}-vulkan-${{ hashFiles('path/to/your/vulkan/config') }}
+          key: ${{ runner.os }}-vulkan-${{ hashFiles('.github/workflows/rust.yml') }}
         if: steps.cache-vulkan.outputs.cache-hit != 'true'
 
       - name: Install Vulkan SDK
@@ -36,7 +36,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: vcpkg
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles('path/to/your/vcpkg/config') }}
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('.github/workflows/rust.yml') }}
         if: steps.cache-vcpkg.outputs.cache-hit != 'true'
 
       - name: Install vcpkg
@@ -46,26 +46,26 @@ jobs:
           .\bootstrap-vcpkg.bat
           vcpkg integrate install
           
-      - name: Cache vcpkg dependencies
-        id: cache-vcpkg-deps
-        uses: actions/cache@v2
-        with:
-          path: C:/path/to/installed/vcpkg/packages # The path where vcpkg installs its packages
-          key: ${{ runner.os }}-vcpkg-deps-${{ hashFiles('path/to/your/vcpkg/config') }}
-        if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
+#       - name: Cache vcpkg dependencies
+#         id: cache-vcpkg-deps
+#         uses: actions/cache@v2
+#         with:
+#           path: C:/path/to/installed/vcpkg/packages # The path where vcpkg installs its packages
+#           key: ${{ runner.os }}-vcpkg-deps-${{ hashFiles('.github/workflows/rust.yml') }}
+#         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
 
-      - name: Install dependencies
-        run: |
-          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
-
-#       - name: Configure and build project
+#       - name: Install dependencies
 #         run: |
-#           mkdir build
-#           cd build
-#           cmake .. -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake
-#           cmake --build .
+#           vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
 
-#       - name: Run tests
-#         run: |
-#           cd build
-#           ctest
+      # - name: Configure and build project
+      #   run: |
+      #     mkdir build
+      #     cd build
+      #     cmake .. -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake
+      #     cmake --build .
+
+      # - name: Run tests
+      #   run: |
+      #     cd build
+      #     ctest
