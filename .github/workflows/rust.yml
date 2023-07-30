@@ -20,7 +20,7 @@ jobs:
         id: cache-vulkan
         uses: actions/cache@v3
         with:
-          path: C:/VulkanSDK # The path to your Vulkan SDK installation directory
+          path: VULKAN_SDK # The path to your Vulkan SDK installation directory
           key: ${{ runner.os }}-vulkan-${{ hashFiles('.github/workflows/rust.yml') }}
         if: steps.cache-vulkan.outputs.cache-hit != 'true'
 
