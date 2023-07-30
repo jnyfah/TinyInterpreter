@@ -47,17 +47,17 @@ jobs:
           vcpkg integrate install
         if: steps.cache-vcpkg.outputs.cache-hit != 'true'
           
-#       - name: Cache vcpkg dependencies
-#         id: cache-vcpkg-deps
-#         uses: actions/cache@v2
-#         with:
-#           path: C:/path/to/installed/vcpkg/packages # The path where vcpkg installs its packages
-#           key: ${{ runner.os }}-vcpkg-deps-${{ hashFiles('.github/workflows/rust.yml') }}
-#         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
+      - name: Cache vcpkg dependencies
+        id: cache-vcpkg-deps
+        uses: actions/cache@v2
+        with:
+          path: C:/path/to/installed/vcpkg/packages # The path where vcpkg installs its packages
+          key: ${{ runner.os }}-vcpkg-deps-${{ hashFiles('.github/workflows/rust.yml') }}
 
-#       - name: Install dependencies
-#         run: |
-#           vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
+      - name: Install dependencies
+        run: |
+          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
+        if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
 
       # - name: Configure and build project
       #   run: |
