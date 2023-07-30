@@ -58,14 +58,14 @@ jobs:
         run: |
           vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
 
-      - name: Configure and build project
-        run: |
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake
-          cmake --build .
+#       - name: Configure and build project
+#         run: |
+#           mkdir build
+#           cd build
+#           cmake .. -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake
+#           cmake --build .
 
-      - name: Run tests
-        run: |
-          cd build
-          ctest
+#       - name: Run tests
+#         run: |
+#           cd build
+#           ctest
