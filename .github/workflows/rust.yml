@@ -7,10 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  
-env:
-  WORKFLOW_PATH: '.github/workflows/rust.yml'
-  VCPKG_V: ${{ github.workspace }}\vcpkg\installed\x64-windows
 
 jobs:
   build:
@@ -25,7 +21,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: C:/VulkanSDK # The path to your Vulkan SDK installation directory
-          key: ${{ runner.os }}-vulkan-${{ hashFiles(env.WORKFLOW_PATH) }}
+          key: ${{ runner.os }}-vulkan-${{ hashFiles('.github/workflows/rust.yml') }}
         if: steps.cache-vulkan.outputs.cache-hit != 'true'
 
       - name: Install Vulkan SDK
@@ -40,7 +36,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: vcpkg
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles(env.WORKFLOW_PATH) }}
+          key: ${{ runner.os }}-vcpkg-${{ hashFiles('.github/workflows/rust.yml') }}
         if: steps.cache-vcpkg.outputs.cache-hit != 'true'
 
       - name: Install vcpkg
@@ -50,17 +46,17 @@ jobs:
           .\bootstrap-vcpkg.bat
           vcpkg integrate install
           
-      - name: Cache vcpkg dependencies
-        id: cache-vcpkg-deps
-        uses: actions/cache@v3
-        with:
-          path: ${{ github.workspace }}/vcpkg/installed/x64-windows
-          key: ${{ runner.os }}-vcpkg-deps-${{ hashFiles(env.WORKFLOW_PATH) }}
-        if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
+#       - name: Cache vcpkg dependencies
+#         id: cache-vcpkg-deps
+#         uses: actions/cache@v2
+#         with:
+#           path: C:/path/to/installed/vcpkg/packages # The path where vcpkg installs its packages
+#           key: ${{ runner.os }}-vcpkg-deps-${{ hashFiles('.github/workflows/rust.yml') }}
+#         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
 
-      - name: Install dependencies
-        run: |
-          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
+#       - name: Install dependencies
+#         run: |
+#           vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
 
       # - name: Configure and build project
       #   run: |
