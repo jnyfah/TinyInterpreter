@@ -14,11 +14,11 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Cache Vulkan SDK
         id: cache-vulkan
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: C:/VulkanSDK # The path to your Vulkan SDK installation directory
           key: ${{ runner.os }}-vulkan-${{ hashFiles('.github/workflows/rust.yml') }}
@@ -33,7 +33,7 @@ jobs:
 
       - name: Cache vcpkg
         id: cache-vcpkg
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: vcpkg
           key: ${{ runner.os }}-vcpkg-${{ hashFiles('.github/workflows/rust.yml') }}
