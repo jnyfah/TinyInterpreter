@@ -7,6 +7,7 @@ use crate::util::location::SourceLocation;
 ///////////////////////////////////////////////////////////////////////////
 /// This file contains implementation of the helper logic for error handling
 /// used internally.
+/// this comment is just to trigger the build
 ///////////////////////////////////////////////////////////////////////////
 
 #[derive(Debug, Clone)]
