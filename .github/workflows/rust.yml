@@ -49,9 +49,9 @@ jobs:
           
       - name: Cache vcpkg dependencies
         id: cache-vcpkg-deps
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
-          path: C:/path/to/installed/vcpkg/packages # The path where vcpkg installs its packages
+          path: vcpkg\installed\x64-windows
           key: ${{ runner.os }}-vcpkg-deps-${{ hashFiles('.github/workflows/rust.yml') }}
 
       - name: Install dependencies
