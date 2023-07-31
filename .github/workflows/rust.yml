@@ -36,7 +36,9 @@ jobs:
         id: cache-sdl3
         uses: actions/cache@v3
         with:
-          path: SDL
+          path: |
+            SDL/build
+            SDL/include
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
           
       - name: Install SDL3
