@@ -69,12 +69,12 @@ jobs:
         id: cache-vcpkg-deps
         uses: actions/cache@v3
         with:
-          path: vcpkg/installed/x64-windows
+          path: vcpkg/packages
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install dependencies
         run: |
-          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
+          vcpkg install --triplet x64-windows vulkan freetype
         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
 
       # - name: Configure and build project
