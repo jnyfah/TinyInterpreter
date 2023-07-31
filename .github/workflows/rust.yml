@@ -74,7 +74,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          vcpkg install --triplet x64-windows vulkan freetype
+          vcpkg install --triplet x64-windows freetype
         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
 
       # - name: Configure and build project
