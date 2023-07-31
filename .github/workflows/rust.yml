@@ -70,7 +70,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: C:/vcpkg/packages
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          key: ${{ runner.os }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install dependencies
         run: |
