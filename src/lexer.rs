@@ -11,6 +11,8 @@ pub struct Lexer{
     pos: usize,
 }
 
+// something something
+
 #[allow(dead_code)]
 impl Lexer {
     fn new(data: String) -> Self {
