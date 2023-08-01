@@ -39,12 +39,12 @@ jobs:
           
       - name: Install SDL3
         run: |
-          if (-Not (Test-Path "SDL")) {
-            git clone https://github.com/libsdl-org/SDL
-            cd SDL && mkdir build
-            cd build && cmake .. -DSDL_STATIC=ON
-            cmake --build . --config Release
-          }
+          git clone https://github.com/libsdl-org/SDL
+          cd SDL && mkdir build
+          cd build && cmake .. -DSDL_STATIC=ON
+          cmake --build . --config Release
+        if: steps.cache-and-install.outputs.cache-hit != 'true'
+
           
       - name: Install vcpkg
         env:
