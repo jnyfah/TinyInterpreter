@@ -31,20 +31,19 @@ jobs:
           vulkan-use-cache: true  
         if: steps.cache-vulkan.outputs.cache-hit != 'true'
         
+      
       - name: Cache SDL3
         id: cache-sdl3
         uses: actions/cache@v3
         with:
-          path: SDL
+          path: |
+            SDL/build
+            SDL/include
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
           
       - name: Install SDL3
-        uses: actions/checkout@v2
-        with:
-          repository: libsdl-org/SDL
-          path: SDL
-      - name: Build SDL3
         run: |
+          git clone https://github.com/libsdl-org/SDL
           cd SDL
           mkdir build && cd build
           cmake .. -DSDL_STATIC=ON
@@ -56,35 +55,19 @@ jobs:
         uses: actions/cache@v3
         with:
           path: vcpkg
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          key: ${{ runner.os }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install vcpkg
-        uses: actions/checkout@v2
-        with:
-          repository: microsoft/vcpkg
-          path: vcpkg
-      - name: Bootstrap vcpkg
+        env:
+          VULKAN_SDK: ${{ github.workspace }}/VULKAN_SDK
         run: |
+          git clone https://github.com/microsoft/vcpkg.git
           cd vcpkg
           .\bootstrap-vcpkg.bat
           vcpkg integrate install
+          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
         if: steps.cache-vcpkg.outputs.cache-hit != 'true'
           
-      - name: Cache vcpkg dependencies
-        id: cache-vcpkg-deps
-        uses: actions/cache@v3
-        with:
-          path: vcpkg
-          key: ${{ runner.os }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('**/lockfiles') }}
-
-      - name: Install dependencies
-        env:
-          VULKAN_SDK: ${{ runner.workspace }}/VULKAN_SDK
-        run: |
-          cd vcpkg
-          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl scenepic
-        if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
-
 
       # - name: Configure and build project
       #   run: |
