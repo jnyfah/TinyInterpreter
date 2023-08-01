@@ -69,12 +69,12 @@ jobs:
         id: cache-vcpkg-deps
         uses: actions/cache@v3
         with:
-          path: vcpkg/packages
+          path: vcpkg
           key: ${{ runner.os }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install dependencies
         env:
-          VULKAN_SDK: D:/a/TinyInterpreter/TinyInterpreter/VULKAN_SDK
+          VULKAN_SDK: ./VULKAN_SDK
         run: |
           vcpkg install --triplet x64-windows vulkan
         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
