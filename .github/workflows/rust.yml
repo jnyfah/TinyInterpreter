@@ -21,7 +21,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: VULKAN_SDK # The path to your Vulkan SDK installation directory
-          key: ${{ runner.os }}-vulkan-${{ hashFiles('.github/workflows/rust.yml') }}
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install Vulkan SDK
         uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -37,7 +37,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: vcpkg
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles('.github/workflows/rust.yml') }}
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install vcpkg
         run: |
@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: C:/path/to/installed/vcpkg/packages # The path where vcpkg installs its packages
-          key: ${{ runner.os }}-vcpkg-deps-${{ hashFiles('.github/workflows/rust.yml') }}
+          key: ${{ runner.os }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install dependencies
         run: |
