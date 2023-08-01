@@ -74,7 +74,7 @@ jobs:
 
       - name: Install dependencies
         env:
-          VULKAN_SDK: ./VULKAN_SDK
+          VULKAN_SDK: D:/a/TinyInterpreter/TinyInterpreter/VULKAN_SDK
         run: |
           vcpkg install --triplet x64-windows vulkan
         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
