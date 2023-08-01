@@ -76,7 +76,7 @@ jobs:
         env:
           VULKAN_SDK: ${{ github.workspace }}/VULKAN_SDK
         run: |
-          vcpkg install --triplet x64-windows vulkan
+          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
 
       # - name: Configure and build project
