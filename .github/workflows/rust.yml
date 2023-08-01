@@ -38,7 +38,7 @@ jobs:
           
       - name: Install SDL3
         run: |
-          if [ ! -d "SDL" ]; then
+          if: ! -d "SDL"
             git clone https://github.com/libsdl-org/SDL
             cd SDL && mkdir build
             cd build && cmake .. -DSDL_STATIC=ON
@@ -49,7 +49,7 @@ jobs:
         env:
           VULKAN_SDK: ${{ github.workspace }}/VULKAN_SDK
         run: |
-          if [ ! -d "vcpkg" ]; then
+          if: ! -d "vcpkg"
             git clone https://github.com/microsoft/vcpkg.git
             cd vcpkg && ./bootstrap-vcpkg.bat
             vcpkg integrate install
