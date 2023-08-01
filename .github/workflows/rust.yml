@@ -38,23 +38,23 @@ jobs:
           
       - name: Install SDL3
         run: |
-          if: ! -d "SDL"
+          if (-Not (Test-Path "SDL")) {
             git clone https://github.com/libsdl-org/SDL
             cd SDL && mkdir build
             cd build && cmake .. -DSDL_STATIC=ON
             cmake --build . --config Release
-          fi
+          }
           
       - name: Install vcpkg
         env:
           VULKAN_SDK: ${{ github.workspace }}/VULKAN_SDK
         run: |
-          if: ! -d "vcpkg"
+          if (-Not (Test-Path "vcpkg")) {
             git clone https://github.com/microsoft/vcpkg.git
             cd vcpkg && ./bootstrap-vcpkg.bat
             vcpkg integrate install
             vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
-          fi
+          }
           
 
       # - name: Configure and build project
