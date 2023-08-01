@@ -30,7 +30,25 @@ jobs:
           vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true  
         if: steps.cache-vulkan.outputs.cache-hit != 'true'
- 
+        
+      
+      - name: Cache SDL3
+        id: cache-sdl3
+        uses: actions/cache@v3
+        with:
+          path: |
+            SDL/build
+            SDL/include
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          
+      - name: Install SDL3
+        run: |
+          git clone https://github.com/libsdl-org/SDL
+          cd SDL
+          mkdir build && cd build
+          cmake .. -DSDL_STATIC=ON
+          cmake --build . --config Release
+        if: steps.cache-sdl3.outputs.cache-hit != 'true'
 
       - name: Cache vcpkg
         id: cache-vcpkg
@@ -49,14 +67,14 @@ jobs:
           
       - name: Cache vcpkg dependencies
         id: cache-vcpkg-deps
-        uses: actions/cache@v2
+        uses: actions/cache@v3
+        env:
+          VULKAN_SDK: D:/a/TinyInterpreter/TinyInterpreter/VULKAN_SDK
         with:
-          path: C:/path/to/installed/vcpkg/packages # The path where vcpkg installs its packages
+          path: vcpkg/packages
           key: ${{ runner.os }}-${{ hashFiles('vcpkg.json') }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install dependencies
-        env:
-          VULKAN_SDK: D:/a/TinyInterpreter/TinyInterpreter/VULKAN_SDK
         run: |
           vcpkg install --triplet x64-windows vulkan
         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
