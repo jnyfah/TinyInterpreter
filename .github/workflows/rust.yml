@@ -82,7 +82,7 @@ jobs:
           VULKAN_SDK: ${{ runner.workspace }}/VULKAN_SDK
         run: |
           cd vcpkg
-          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl
+          vcpkg install --triplet x64-windows vulkan freetype libpng[apng] harfbuzz fmt libwebp libjpeg-turbo libpng spdlog simdjson gtest libogg ffmpeg libavif curl scenepic
         if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true'
 
 
